@@ -18,9 +18,7 @@ from pyrogram import types
 from user import User
 
 class Bot(Client):
-    USER: User = None
-    USER_ID: int = None
-        
+
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -32,7 +30,7 @@ class Bot(Client):
             sleep_threshold=5,
         )
 
-    async def start(self):        
+    async def start(self):
         b_users, b_chats = await db.get_banned()
         temp.BANNED_USERS = b_users
         temp.BANNED_CHATS = b_chats
@@ -44,12 +42,13 @@ class Bot(Client):
         temp.B_NAME = me.first_name
         self.username = '@' + me.username
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
-        logging.info(LOG_STR) 
-        self.set_parse_mode("html")
-        self.LOGGER(__name__).info(
-            f"@{usr_bot_me.username}  started!\n\n"
-            f"Add @{me.username} as admin with all rights in your required channels\n\n"
-        )
+        logging.info(LOG_STR)
+        logging.info(script.LOGO)
+        tz = pytz.timezone('Asia/Kolkata')
+        today = date.today()
+        now = datetime.now(tz)
+        time = now.strftime("%H:%M:%S %p")
+        await self.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
 
     async def stop(self, *args):
         await super().stop()
@@ -97,8 +96,6 @@ class Bot(Client):
 
 app = Bot()
 app.run()
-
-
 
 
 class BBot(Client):
