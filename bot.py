@@ -30,6 +30,7 @@ class Bot(Client):
         )
 
     async def start(self):
+        await super().start()
         b_users, b_chats = await db.get_banned()
         temp.BANNED_USERS = b_users
         temp.BANNED_CHATS = b_chats
@@ -41,9 +42,7 @@ class Bot(Client):
         temp.B_NAME = me.first_name
         self.username = '@' + me.username
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
-        logging.info(LOG_STR)
-        async def start(self):
-        await super().start()
+        logging.info(LOG_STR)   
         usr_bot_me = await self.get_me()
         self.set_parse_mode("html")
         self.LOGGER(__name__).info(
