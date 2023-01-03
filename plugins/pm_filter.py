@@ -48,7 +48,7 @@ async def give_filter(client, message):
         
         
 
-#@Client.on_message(filters.group & filters.text)
+@Client.on_message(filters.group & filters.text)
 async def auto_filter(client, message: Message):
     if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
         return
