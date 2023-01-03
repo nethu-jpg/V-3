@@ -26,7 +26,7 @@ from database.mdb import (
 
 
 
-@Client.on_message(filters.group & filters.command(["add"]))
+@Client.on_message(filters.group & filters.command(["fadd"]))
 async def addchannel(client, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
@@ -193,7 +193,7 @@ async def addchannel(client, message: Message):
     await intmsg.edit_text("Channel added successfully!")
 
 
-@Client.on_message(filters.group & filters.command(["del"]))
+@Client.on_message(filters.group & filters.command(["fdel"]))
 async def deletechannelfilters(client, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
@@ -267,7 +267,7 @@ async def deletechannelfilters(client, message: Message):
         )
 
 
-@Client.on_message(filters.group & filters.command(["delall"]))
+@Client.on_message(filters.group & filters.command(["fdelall"]))
 async def delallconfirm(client, message: Message):
     await message.reply_text(
         "Are you sure?? This will disconnect all connected channels and deletes all filters in group",
