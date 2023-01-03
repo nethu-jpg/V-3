@@ -27,7 +27,7 @@ from database.mdb import (
 
 
 @Client.on_message(filters.group & filters.command(["add"]))
-async def addchannel(client: Bot, message: Message):
+async def addchannel(client, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
         return
@@ -194,7 +194,7 @@ async def addchannel(client: Bot, message: Message):
 
 
 @Client.on_message(filters.group & filters.command(["del"]))
-async def deletechannelfilters(client: Bot, message: Message):
+async def deletechannelfilters(client, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
         return
@@ -268,7 +268,7 @@ async def deletechannelfilters(client: Bot, message: Message):
 
 
 @Client.on_message(filters.group & filters.command(["delall"]))
-async def delallconfirm(client: Bot, message: Message):
+async def delallconfirm(client, message: Message):
     await message.reply_text(
         "Are you sure?? This will disconnect all connected channels and deletes all filters in group",
         reply_markup=InlineKeyboardMarkup([
@@ -309,7 +309,7 @@ async def deleteallfilters(client: Bot, message: Message):
 
 
 @Client.on_message(filters.group & filters.command(["filterstats"]))
-async def stats(client: Bot, message: Message):
+async def stats(client, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
         return
@@ -339,7 +339,7 @@ async def stats(client: Bot, message: Message):
 
 
 @Client.on_message(filters.channel & (filters.document | filters.video | filters.audio))
-async def addnewfiles(client: Bot, message: Message):
+async def addnewfiles(client, message: Message):
 
     media = message.document or message.video or message.audio
 
