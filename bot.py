@@ -17,7 +17,9 @@ from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
 
 class Bot(Client):
-
+    USER: User = None
+    USER_ID: int = None
+        
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -41,9 +43,12 @@ class Bot(Client):
         temp.B_NAME = me.first_name
         self.username = '@' + me.username
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
-        logging.info(LOG_STR)   
-        
-        #self.USER, self.USER_ID = await User().start()    #AUTH_USERS.add(680815375)
+        logging.info(LOG_STR) 
+        self.set_parse_mode("html")
+        self.LOGGER(__name__).info(
+            f"@{usr_bot_me.username}  started!\n\n"
+            f"Add @{me.username} as admin with all rights in your required channels\n\n"
+        )
 
     async def stop(self, *args):
         await super().stop()
