@@ -278,7 +278,7 @@ async def delallconfirm(client, message: Message):
     )
 
 
-async def deleteallfilters(client: Bot, message: Message):
+async def deleteallfilters(client, message: Message):
 
     if message.reply_to_message.from_user.id not in AUTH_USERS:
         return
