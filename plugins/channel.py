@@ -25,8 +25,8 @@ from database.mdb import (
 )
 
 
-
-@Client.on_message(filters.group & filters.command(["fadd"]))
+@Client.on_message(filters.group & filters.command(['fadd']) & filters.incoming)
+#@Client.on_message(filters.group & filters.command(["fadd"]))
 async def addchannel(client, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
