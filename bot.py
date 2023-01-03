@@ -16,7 +16,7 @@ from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
 from user import User
-
+from Script import script 
 
 class Bot(Client):
     USER: User = None
