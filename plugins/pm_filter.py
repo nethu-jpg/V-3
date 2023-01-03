@@ -9,7 +9,7 @@ from database.connections_mdb import active_connection, all_connections, delete_
     make_inactive
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, IMDB, \
     SINGLE_BUTTON, SPELL_CHECK_REPLY, IMDB_TEMPLATE
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
@@ -20,6 +20,17 @@ from database.filters_mdb import (
     find_filter,
     get_filters,
 )
+
+from pyrogram.types import (
+    InlineKeyboardButton, 
+    InlineKeyboardMarkup, 
+    
+)
+
+from bot import Bot
+#from script import script
+from database.mdb import searchquery
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -34,6 +45,151 @@ async def give_filter(client, message):
     k = await manual_filters(client, message)
     if k == False:
         await auto_filter(client, message)
+        
+        
+
+#@Client.on_message(filters.group & filters.text)
+async def auto_filter(client: Bot, message: Message):
+    if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
+        return
+
+    if 2 < len(message.text) < 150:    
+        btn = []
+
+        group_id = message.chat.id
+        name = message.text
+
+        filenames, links = await searchquery(group_id, name)
+        if filenames and links:
+            for filename, link in zip(filenames, links):
+                btn.append(
+                    [InlineKeyboardButton(text=f"{filename}",url=f"{link}")]
+                )
+        else:
+            return
+
+        if not btn:
+            return
+
+        if len(btn) > 10: 
+            btns = list(split_list(btn, 10)) 
+            keyword = f"{message.chat.id}-{message.message_id}"
+            BUTTONS[keyword] = {
+                "total" : len(btns),
+                "buttons" : btns
+            }
+        else:
+            buttons = btn
+            buttons.append(
+                [InlineKeyboardButton(text="📃 Pages 1/1",callback_data="pages")]
+            )
+            await message.reply_text(
+                f"<b> Here is the result for {message.text}</b>",
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )
+            return
+
+        data = BUTTONS[keyword]
+        buttons = data['buttons'][0].copy()
+
+        buttons.append(
+            [InlineKeyboardButton(text="NEXT ⏩",callback_data=f"next_0_{keyword}")]
+        )    
+        buttons.append(
+            [InlineKeyboardButton(text=f"📃 Pages 1/{data['total']}",callback_data="pages")]
+        )
+
+        await message.reply_text(
+                f"<b> Here is the result for {message.text}</b>",
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )    
+
+
+@Client.on_callback_query()
+async def cb_handler(client: Bot, query: CallbackQuery):
+    clicked = query.from_user.id
+    typed = query.message.reply_to_message.from_user.id
+
+    if (clicked == typed) or (clicked in AUTH_USERS):
+
+        if query.data.startswith("next"):
+            await query.answer()
+            ident, index, keyword = query.data.split("_")
+            try:
+                data = BUTTONS[keyword]
+            except KeyError:
+                await query.answer("You are using this for one of my old message, please send the request again.",show_alert=True)
+                return
+
+            if int(index) == int(data["total"]) - 2:
+                buttons = data['buttons'][int(index)+1].copy()
+
+                buttons.append(
+                    [InlineKeyboardButton("⏪ BACK", callback_data=f"back_{int(index)+1}_{keyword}")]
+                )
+                buttons.append(
+                    [InlineKeyboardButton(f"📃 Pages {int(index)+2}/{data['total']}", callback_data="pages")]
+                )
+
+                await query.edit_message_reply_markup( 
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                )
+                return
+            else:
+                buttons = data['buttons'][int(index)+1].copy()
+
+                buttons.append(
+                    [InlineKeyboardButton("⏪ BACK", callback_data=f"back_{int(index)+1}_{keyword}"),InlineKeyboardButton("NEXT ⏩", callback_data=f"next_{int(index)+1}_{keyword}")]
+                )
+                buttons.append(
+                    [InlineKeyboardButton(f"📃 Pages {int(index)+2}/{data['total']}", callback_data="pages")]
+                )
+
+                await query.edit_message_reply_markup( 
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                )
+                return
+
+
+        elif query.data.startswith("back"):
+            await query.answer()
+            ident, index, keyword = query.data.split("_")
+            try:
+                data = BUTTONS[keyword]
+            except KeyError:
+                await query.answer("You are using this for one of my old message, please send the request again.",show_alert=True)
+                return
+
+            if int(index) == 1:
+                buttons = data['buttons'][int(index)-1].copy()
+
+                buttons.append(
+                    [InlineKeyboardButton("NEXT ⏩", callback_data=f"next_{int(index)-1}_{keyword}")]
+                )
+                buttons.append(
+                    [InlineKeyboardButton(f"📃 Pages {int(index)}/{data['total']}", callback_data="pages")]
+                )
+
+                await query.edit_message_reply_markup( 
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                )
+                return   
+            else:
+                buttons = data['buttons'][int(index)-1].copy()
+
+                buttons.append(
+                    [InlineKeyboardButton("⏪ BACK", callback_data=f"back_{int(index)-1}_{keyword}"),InlineKeyboardButton("NEXT ⏩", callback_data=f"next_{int(index)-1}_{keyword}")]
+                )
+                buttons.append(
+                    [InlineKeyboardButton(f"📃 Pages {int(index)}/{data['total']}", callback_data="pages")]
+                )
+
+                await query.edit_message_reply_markup( 
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                )
+                return
+
+
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
