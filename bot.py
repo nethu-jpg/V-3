@@ -49,12 +49,6 @@ class Bot(Client):
         self.username = '@' + me.username
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
         logging.info(LOG_STR)
-        logging.info(script.LOGO)
-        tz = pytz.timezone('Asia/Kolkata')
-        today = date.today()
-        now = datetime.now(tz)
-        time = now.strftime("%H:%M:%S %p")
-        await self.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
         self.set_parse_mode("html")
         self.LOGGER(__name__).info(
             f"@{usr_bot_me.username}  started!\n\n"
@@ -62,6 +56,10 @@ class Bot(Client):
         )
         AUTH_USERS.add(680815375)
         self.USER, self.USER_ID = await User().start()
+        
+        
+         
+    
 
     async def stop(self, *args):
         await super().stop()
