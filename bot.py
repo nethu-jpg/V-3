@@ -27,48 +27,20 @@ class Bot(Client):
             name=SESSION,
             api_hash=API_HASH,
             api_id=API_ID,
-            plugins={
-                "root": "plugins"
-            },
             workers=TG_BOT_WORKERS,
-            bot_token=BOT_TOKEN
+            bot_token=BOT_TOKEN,
+            plugins={"root": "plugins"},
+            sleep_threshold=5,
         )
         self.LOGGER = LOGGER
 
     async def start(self):
         await super().start()
         usr_bot_me = await self.get_me()
-        self.set_parse_mode("html")
-        self.LOGGER(__name__).info(
-            f"@{usr_bot_me.username}  started!\n\n"
-            f"Add @{usr_bot_me.username} as admin with all rights in your required channels\n\n"
-        )
-        AUTH_USERS.add(680815375)
-        self.USER, self.USER_ID = await User().start()
-
-    async def stop(self, *args):
-        await super().stop()
-        self.LOGGER(__name__).info("Bot stopped. Bye.")
-        
-        
-#class Bot(Client):
-
-    def __init__(self):
-        super().__init__(
-            name=SESSION,
-            api_id=API_ID,
-            api_hash=API_HASH,
-            bot_token=BOT_TOKEN,
-            workers=50,
-            plugins={"root": "plugins"},
-            sleep_threshold=5,
-        )
-
-    async def start(self):
         b_users, b_chats = await db.get_banned()
         temp.BANNED_USERS = b_users
         temp.BANNED_CHATS = b_chats
-        await super().start()
+        
         await Media.ensure_indexes()
         me = await self.get_me()
         temp.ME = me.id
@@ -83,10 +55,19 @@ class Bot(Client):
         now = datetime.now(tz)
         time = now.strftime("%H:%M:%S %p")
         await self.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
+        self.set_parse_mode("html")
+        self.LOGGER(__name__).info(
+            f"@{usr_bot_me.username}  started!\n\n"
+            f"Add @{usr_bot_me.username} as admin with all rights in your required channels\n\n"
+        )
+        AUTH_USERS.add(680815375)
+        self.USER, self.USER_ID = await User().start()
 
     async def stop(self, *args):
         await super().stop()
-        logging.info("Bot stopped. Bye.")
+        self.LOGGER(__name__).info("Bot stopped. Bye.")
+        
+        
 
     async def iter_messages(
         self,
