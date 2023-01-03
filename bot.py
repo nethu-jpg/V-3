@@ -17,7 +17,7 @@ from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
 from user import User
 from Script import script 
-
+import pytz
 class Bot(Client):
     USER: User = None
     USER_ID: int = None
