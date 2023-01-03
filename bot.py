@@ -34,7 +34,6 @@ class Bot(Client):
             workers=50,
             plugins={"root": "plugins"},
             workers=TG_BOT_WORKERS,
-            bot_token=TG_BOT_TOKEN,
             sleep_threshold=5,
                   
         )
