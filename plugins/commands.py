@@ -81,7 +81,7 @@ async def start(client, message):
 #@Client.on_message(filters.group & filters.command(['fadd']) & filters.incoming)
 #@Client.on_message(filters.group & filters.command(["fadd"]))
 @Client.on_message(filters.command("fadd") & filters.incoming)
-async def addchannel(client, message: Message):
+async def addchannel(client: Bot, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
         return
