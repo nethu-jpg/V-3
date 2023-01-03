@@ -9,7 +9,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.errors import UserAlreadyParticipant
-from bot import Bot
+from bot import Bot, BBot
 from user import User
 from info import AUTH_USERS, DOC_SEARCH, VID_SEARCH, MUSIC_SEARCH
 from database.mdb import (
@@ -24,10 +24,10 @@ from database.mdb import (
     countfilters
 )
 
-
+bot = BBot
 @Client.on_message(filters.group & filters.command(['fadd']) & filters.incoming)
 #@Client.on_message(filters.group & filters.command(["fadd"]))
-async def addchannel(client, message: Message):
+async def addchannel(client: bot, message: Message):
 
     if message.from_user.id not in AUTH_USERS:
         return
