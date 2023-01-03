@@ -27,7 +27,7 @@ from pyrogram.types import (
     
 )
 
-from bot import Bot
+#from bot import Bot
 #from script import script
 from database.mdb import searchquery
 
