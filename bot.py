@@ -43,7 +43,7 @@ class Bot(Client):
         logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
         logging.info(LOG_STR)   
         
-        self.USER, self.USER_ID = await User().start()    #AUTH_USERS.add(680815375)
+        #self.USER, self.USER_ID = await User().start()    #AUTH_USERS.add(680815375)
 
     async def stop(self, *args):
         await super().stop()
