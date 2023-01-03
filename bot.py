@@ -15,7 +15,7 @@ from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_STR, AUTH_USERS
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
-
+from user import Bot
 class Bot(Client):
     USER: User = None
     USER_ID: int = None
