@@ -17,7 +17,7 @@ from info import (
 )
 
 
-class Bot(Client):
+class User(Client):
     def __init__(self):
         super().__init__(
             name=SESSION,
