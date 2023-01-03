@@ -9,6 +9,45 @@ def is_enabled(value, default):
         return False
     else:
         return default
+    
+    
+# Should bot search for document files in channels
+DOC_SEARCH = os.environ.get("DOC_SEARCH", "yes").lower()
+
+# Should bot search for video files in channels
+VID_SEARCH = os.environ.get("VID_SEARCH", "yes").lower()
+
+# Should bot search for music files in channels
+MUSIC_SEARCH = os.environ.get("MUSIC_SEARCH", "yes").lower()
+
+
+
+
+TG_BOT_SESSION = os.environ.get("TG_BOT_SESSION", "bot")
+TG_BOT_WORKERS = int(os.environ.get("TG_BOT_WORKERS", "4"))
+LOG_FILE_NAME = "filterbot.txt"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s - %(levelname)s] - %(name)s - %(message)s",
+    datefmt='%d-%b-%y %H:%M:%S',
+    handlers=[
+        RotatingFileHandler(
+            LOG_FILE_NAME,
+            maxBytes=50000000,
+            backupCount=10
+        ),
+        logging.StreamHandler()
+    ]
+)
+logging.getLogger("pyrogram").setLevel(logging.WARNING)
+
+
+def LOGGER(name: str) -> logging.Logger:
+    return logging.getLogger(name)
+
+
+    
 
 # Bot information
 SESSION = environ.get('SESSION', '')
