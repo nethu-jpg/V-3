@@ -19,7 +19,7 @@ import asyncio
 
 
 
-from user import Bot
+from bot import Bot
 from info import AUTH_USERS, DOC_SEARCH, VID_SEARCH, MUSIC_SEARCH
 from database.mdb import (
     savefiles,
